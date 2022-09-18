@@ -30,21 +30,41 @@ ApplicationWindow {
         }
     }
 
-
     StackLayout {
         id: layout
         anchors.fill: parent
         currentIndex: bar.currentIndex
         objectName: "stack_layout"
 
-        Rectangle {
-            color: "red"
-            Rectangle {
-                anchors.centerIn: parent
-                width: parent.width / 2
-                height: parent.height / 2
-                color: "blue"
+        SceneDisplay {
+            id: scene_display
+
+            sceneModel: SceneModel {
+                
             }
+
+            Button {
+                id: button_generate
+                text: "qsTr(Generate)"
+                onClicked: {
+                    scene_display.sceneModel.clear();
+
+                    var diameter = 5;
+                    for (var i = 0; i < 1000; ++i) {
+                        var posX = Math.random() * (scene_display.width - diameter);
+                        var posY = Math.random() * (scene_display.height - diameter);
+                        scene_display.sceneModel.addCircle(Qt.rect(posX, posY, diameter, diameter));
+                    }
+
+                    for (var i = 0; i < 1000; ++i) {
+                        var posX = Math.random() * (scene_display.width - diameter);
+                        var posY = Math.random() * (scene_display.height - diameter);
+                        scene_display.sceneModel.addCircleSelectable(Qt.rect(posX, posY, diameter, diameter), false);
+                    }
+                    scene_display.update();
+                }
+            }
+            
         }
     }
 }

@@ -3,10 +3,26 @@ set(Qt_REQUIRED_VERSION 6.2.0)
 set(Qt_REQUIRED_COMPONENTS Core Quick Gui Widgets Svg)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} ${Qt_REQUIRED_VERSION} COMPONENTS ${Qt_REQUIRED_COMPONENTS} REQUIRED)
-
 set(CMAKE_AUTOMOC ON)
 
+find_package(EnTT CONFIG REQUIRED)
+
 add_subdirectory(HotReload)
+
+set(${PROJECT_NAME}Libraries 
+    project_options
+    project_warnings
+    docopt_s
+    fmt::fmt
+    spdlog::spdlog
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Svg
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    EnTT::EnTT
+    HotReloadLib
+)
 
 include(FileListing.cmake)
 
@@ -19,7 +35,10 @@ qt_add_qml_module(${QmlCppIntegrationLibName}
         ${${PROJECT_NAME}_Headers}
         ${${PROJECT_NAME}_Sources}
 )
-target_link_libraries(${QmlCppIntegrationLibName} PRIVATE ${QmlCppIntegrationLibName}plugin)
+target_link_libraries(${QmlCppIntegrationLibName} 
+    PRIVATE ${${PROJECT_NAME}Libraries}
+            ${QmlCppIntegrationLibName}plugin
+)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
@@ -28,20 +47,8 @@ add_executable(${PROJECT_NAME} main.cpp)
 #     PRIVATE ${${PROJECT_NAME}_Sources}
 # )
 
-message(STATUS "HotReloadLibName : ${HotReloadLibName}")
-
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE project_options
-          project_warnings
-          docopt_s
-          fmt::fmt
-          spdlog::spdlog
-          Qt${QT_VERSION_MAJOR}::Quick
-          Qt${QT_VERSION_MAJOR}::Gui
-          Qt${QT_VERSION_MAJOR}::Svg
-          Qt${QT_VERSION_MAJOR}::Widgets
-          Qt${QT_VERSION_MAJOR}::Core
-          HotReloadLib
+  PRIVATE ${${PROJECT_NAME}Libraries}
           ${QmlCppIntegrationLibName}
 )
 
