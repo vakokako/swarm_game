@@ -1,0 +1,7 @@
+/build/
+/out/
+*.code-workspace
+/cmake-build-debug
+
+.clang-format
+.clang-tidy
